@@ -73,7 +73,7 @@ def generate():
             #next part comes from https://stackoverflow.com/questions/43295189/extending-a-image-and-adding-text-on-the-extended-area-using-python-pil
             #create card
             height = 800
-            interval = 300
+            interval = 200
             paperwidth = 2550
             paperheight = 3300
             center = (paperwidth/2)-(paperwidth/6)
@@ -85,20 +85,20 @@ def generate():
             qr = Image.open('qrcode.png')
             qr = qr.resize((1000, 1000), Image.ANTIALIAS)
             background.paste(qr, ((round(paperwidth / 2)), 20))
-            draw.text((center, ((height + interval) * 1)), control_number_text, (0, 0, 0), font=font)
-            draw.text((center, ((height + interval) * 2)), fname.get(), (0, 0, 0), font=font)
-            draw.text((center, ((height + interval) * 3)), lname.get(), (25, 25, 25), font=font)
-            draw.text((center, ((height + interval) * 4)), grade.get(), (25, 25, 25), font=font)
-            draw.text((center, ((height + interval) * 5)), num.get(), (25, 25, 25), font=font)
-            draw.text((center, ((height + interval) * 6)), sport.get(), (25, 25, 25), font=font)
-            draw.text((center, ((height + interval) * 7)), school.get(), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 1))), control_number_text, (0, 0, 0), font=font)
+            draw.text((center, (height + (interval * 2))), fname.get(), (0, 0, 0), font=font)
+            draw.text((center, (height + (interval * 3))), lname.get(), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 4))), grade.get(), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 5))), num.get(), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 6))), sport.get(), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 7))), school.get(), (25, 25, 25), font=font)
             #save the card as a png
             background.save(save_path+'/'+control_number_text+"_"+fname.get()+"_" +lname.get()+'.png')
             #print the card to default printer
             if sys.platform == 'darwin':
-                os.system("lpr "+save_path+'/'+control_number_text+"_"+fname.get()+ lname.get()+'.png')
+                os.system("lpr "+save_path+'/'+control_number_text+"_"+fname.get()+ '_'+lname.get()+'.png')
             else:
-                os.startfile(save_path+'/'+control_number_text+"_"+fname.get()+ lname.get()+'.png', 'print')
+                os.startfile(save_path+'/'+control_number_text+"_"+fname.get()+'_'+ lname.get()+'.png', 'print')
     #add all the inputs to the dictionary
             #team.update( {num.get():{'First Name':fname.get(),'Last Name':lname.get(), 'Number':num.get(), 'Age': age.get(),'Sport': sport.get(), 'School':school.get()}} )
             team['first_name'].append(fname.get())
