@@ -147,17 +147,20 @@ def generate():
             file1.close()
             #add to dataframe and save as a csv
             pd.DataFrame(team).to_csv(save_path + '/' + name_of_file + '.csv',index=False)
+
             #backup files
-            completeName = os.path.join(backup_save_path, name_of_file + ".pickle")
+            try:
+                completeName = os.path.join(backup_save_path, name_of_file + ".pickle")
 
-            file1 = open(completeName, "wb")
+                file1 = open(completeName, "wb")
 
-            with open(completeName, 'wb') as handle:
-                pickle.dump(team, file1)
-            file1.close()
-            # add to dataframe and save as a csv
-            pd.DataFrame(team).to_csv(backup_save_path + '/' + name_of_file + '.csv', index=False)
-
+                with open(completeName, 'wb') as handle:
+                    pickle.dump(team, file1)
+                file1.close()
+                # add to dataframe and save as a csv
+                pd.DataFrame(team).to_csv(backup_save_path + '/' + name_of_file + '.csv', index=False)
+            except:
+                pass
             #clear out fields
             fields_to_clear = [fnameEntry, lnameEntry, numEntry, parentfnameEntry, parentlnameEntry, parentnumberEntry, emailEntry,
                                eightbytenEntry, teamphotoEntry, fiftyEntry, bannerEntry, blanketEntry, frameEntry, paymentamountEntry, notesEntry]
@@ -184,12 +187,12 @@ def showCode():
 
 def total_up():
     timeframe = messagebox.askyesno('Total up?', 'Would you like to total for today only?')
-    password = askstring('Thank You!', 'Enter password', show='*')
+    password = askstring('Password', 'Enter password', show='*')
     if password == 'a':
         if timeframe == True:
             df = pd.DataFrame(team)
             df = df[df['date']==today]
-            df['full_name'] = df.first_name+'_'+df.last_name
+            df['full_name'] = df.first_name+' '+df.last_name
             df['payment_amount'] = df.payment_amount.astype(int)
             cards = df[df['payment_type']=='Card']
             cash = df[df['payment_type']=='Cash']
@@ -219,6 +222,91 @@ def total_up():
 
     else:
         messagebox.showinfo("Incorrect Password", "Please input the correct password")
+
+def export_team_by_number():
+    timeframe = messagebox.askyesno('Export team', 'Would you like to export for today only?')
+    password = askstring('Password', 'Enter password', show='*')
+    sort_key = 'number'
+    if password == 'a':
+        if timeframe == True:
+            df = pd.DataFrame(team)
+            df = df[df['date'] == today]
+            df['full_name'] = df.first_name + ' ' + df.last_name
+            try:
+                sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list= sorted_list.sort_values(by =['sport',sort_key, 'full_name'], ascending = True)
+                sorted_list = sorted_list[['sport',sort_key, 'full_name']]
+            except:
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full_name']]
+        else:
+            df = pd.DataFrame(team)
+            df['full_name'] = df.first_name + ' ' + df.last_name
+            try:
+                sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list = sorted_list.sort_values(by=['sport', sort_key, 'full_name'], ascending=True)
+                sorted_list = sorted_list[['sport', sort_key, 'full_name']]
+            except:
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full_name']]
+        sorted_list.to_csv(save_path+'/Roster By Number.csv', index=False)
+        if sys.platform == 'darwin':
+            os.system("lpr " + save_path + '/Roster By Number.csv')
+        else:
+            os.startfile(save_path + '/Roster By Number.csv', 'print')
+            if sys.platform == 'darwin':
+                os.system("lpr " + save_path + '/Roster By Number.csv')
+            else:
+                os.startfile(save_path + '/Roster By Number.csv', 'print')
+
+def export_team_by_grade():
+    timeframe = messagebox.askyesno('Export team', 'Would you like to export for today only?')
+    password = askstring('Password', 'Enter password', show='*')
+    sort_key = 'grade'
+    if password == 'a':
+        if timeframe == True:
+            df = pd.DataFrame(team)
+            df = df[df['date'] == today]
+            df['full_name'] = df.first_name + ' ' + df.last_name
+            try:
+                sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list= sorted_list.sort_values(by =['sport',sort_key, 'full_name'], ascending = True)
+                sorted_list = sorted_list[['sport',sort_key, 'full_name']]
+            except:
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full_name']]
+        else:
+            df = pd.DataFrame(team)
+            df['full_name'] = df.first_name + ' ' + df.last_name
+            try:
+                sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list = sorted_list.sort_values(by=['sport', sort_key, 'full_name'], ascending=True)
+                sorted_list = sorted_list[['sport', sort_key, 'full_name']]
+            except:
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list = sorted_list_pivot.reset_index()
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full_name']]
+        sorted_list.to_csv(save_path+'/Roster By Grade.csv', index=False)
+        if sys.platform == 'darwin':
+            os.system("lpr " + save_path + '/Roster By Grade.csv')
+        else:
+            os.startfile(save_path + '/Roster By Grade.csv', 'print')
+            if sys.platform == 'darwin':
+                os.system("lpr " + save_path + '/Roster By Grade.csv')
+            else:
+                os.startfile(save_path + '/Roster By Grade.csv', 'print')
+
 
 
 def clear_widget(event):
@@ -467,8 +555,15 @@ notesEntry.bind("<FocusIn>", clear_widget)
 
 createButton = Button(window, text= "Submit", font=("Helvetica", 12), width= 15,command= generate)
 createButton.grid(row=submitrow, column=0, sticky= N+S+E+W)
+
 totalButton = Button(window, text= "Total Up", font=("Helvetica", 12), width= 15,command= total_up)
 totalButton.grid(row=submitrow, column=1, sticky= N+S+E+W)
+
+printteamgradeButton = Button(window, text= "Export Team - Grade", font=("Helvetica", 12), width= 5,command= export_team_by_grade)
+printteamgradeButton.grid(row=submitrow, column=2, sticky= N+S+E+W)
+
+printteamnumberButton = Button(window, text= "Export Team - Number", font=("Helvetica", 12), width= 5,command= export_team_by_number)
+printteamnumberButton.grid(row=notesrow, column=2, sticky= N+S+E+W)
 
 #notificationLabel= Label(window)
 #notificationLabel.grid(row= submitrow, column=1, sticky= N+S+E+W)
