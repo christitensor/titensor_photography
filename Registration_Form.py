@@ -18,7 +18,7 @@ from datetime import datetime
 window = Tk()
 window.title("Titensor Photography Registration")
 window.configure(background='yellow')
-
+today = datetime.date(datetime.now())
 result = messagebox.askyesno('Resume Session?', 'Would you like to go back to a prior session?')
 
 if result == True:
@@ -128,7 +128,7 @@ def generate():
             team['payment_type'].append(payment.get())
             team['payment_amount'].append(paymentamount.get())
             team['notes'].append(notes.get())
-            team['date'].append(datetime.date(datetime.now()))
+            team['date'].append(today)
 
             #team = {k: np.nan if not v else v for k, v in team.items()}
             for key, value in team.items():
@@ -181,6 +181,45 @@ def showCode():
     global photo
     notificationLabel.config(image= photo)
     #subLabel.config(text= "Showing QR Code for: "+fname.get()+' '+lname.get())
+
+def total_up():
+    timeframe = messagebox.askyesno('Total up?', 'Would you like to total for today only?')
+    password = askstring('Thank You!', 'Enter password', show='*')
+    if password == 'a':
+        if timeframe == True:
+            df = pd.DataFrame(team)
+            df = df[df['date']==today]
+            df['full_name'] = df.first_name+'_'+df.last_name
+            df['payment_amount'] = df.payment_amount.astype(int)
+            cards = df[df['payment_type']=='Card']
+            cash = df[df['payment_type']=='Cash']
+            check = df[df['payment_type']=='Check']
+
+            cardtotal = cards.payment_amount.sum()
+            cashtotal = cash.payment_amount.sum()
+            checktotal = check.payment_amount.sum()
+            daystotal = df.payment_amount.sum()
+            summary = 'Card total: '+ str(cardtotal)+' - Cash total: '+str(cashtotal)+ ' - Check total: '+str(checktotal) + ' - Total: '+str(daystotal)
+            messagebox.showinfo("Totals", summary)
+        else:
+            df = pd.DataFrame(team)
+            df['full_name'] = df.first_name + '_' + df.last_name
+            df['payment_amount'] = df.payment_amount.astype(int)
+            cards = df[df['payment_type'] == 'Card']
+            cash = df[df['payment_type'] == 'Cash']
+            check = df[df['payment_type'] == 'Check']
+
+            cardtotal = cards.payment_amount.sum()
+            cashtotal = cash.payment_amount.sum()
+            checktotal = check.payment_amount.sum()
+            daystotal = df.payment_amount.sum()
+            summary = 'Card total: ' + str(cardtotal) + ' - Cash total: ' + str(cashtotal) + ' - Check total: ' + str(
+                checktotal) + ' - Total: ' + str(daystotal)
+            messagebox.showinfo("Totals", summary)
+
+    else:
+        messagebox.showinfo("Incorrect Password", "Please input the correct password")
+
 
 def clear_widget(event):
     # will clear out any entry boxes defined below when the user shifts
@@ -428,6 +467,8 @@ notesEntry.bind("<FocusIn>", clear_widget)
 
 createButton = Button(window, text= "Submit", font=("Helvetica", 12), width= 15,command= generate)
 createButton.grid(row=submitrow, column=0, sticky= N+S+E+W)
+totalButton = Button(window, text= "Total Up", font=("Helvetica", 12), width= 15,command= total_up)
+totalButton.grid(row=submitrow, column=1, sticky= N+S+E+W)
 
 #notificationLabel= Label(window)
 #notificationLabel.grid(row= submitrow, column=1, sticky= N+S+E+W)
