@@ -21,14 +21,32 @@ window.configure(background='yellow')
 today = datetime.date(datetime.now())
 result = messagebox.askyesno('Resume Session?', 'Would you like to go back to a prior session?')
 
-flexfield1 = 'Sport'
-sportchoices = { 'Football','Tennis', 'Soccer', 'Volleyball', 'Cross Country','Golf', 'Cheer'}
-flexfield2 = 'School'
-flexfield1list = ['Preston', 'Green Canyon', 'Ridgeline', 'Skyview', 'Logan', 'N/A']
-schoolchoices = set(flexfield1list)
-print(flexfield1list[0])
-flexfield3 = 'Grade'
-gradechoices = {9, 10, 11,12, 'Coach'}
+
+
+uploadnewteams = messagebox.askyesno('Upload New Teams?', 'Would you like to upload a new list of teams and grades?')
+if uploadnewteams == True:
+    messagebox.showinfo(title='Open...', message="Open the xlsx file with schools, teams, sports, and grades")
+    newteamsandgradesfiles = askopenfilename()
+    teams = pd.read_excel(newteamsandgradesfiles, sheet_name='Teams')
+    grades = pd.read_excel(newteamsandgradesfiles, sheet_name='Grades')
+    schools = pd.read_excel(newteamsandgradesfiles, sheet_name='Schools')
+    sports = pd.read_excel(newteamsandgradesfiles, sheet_name='Sports')
+
+    schoollist = schools.School.tolist()
+    gradelist = grades.Grades.tolist()
+    teamlist = teams.Teams.tolist()
+    sportlist = sports.Sports.tolist()
+
+else:
+    schoollist = ['Ridgeline', 'Preston', 'Green Canyon', 'Skyview', 'Logan', 'N/A']
+    gradelist = [9, 10, 11,12, 'Coach']
+    teamlist = ['Varsity', 'JV', 'Freshman', 'N/A']
+    sportlist = ['Football', 'Tennis', 'Soccer', 'Volleyball', 'Cross Country', 'Golf', 'Cheer']
+
+gradechoices = set(gradelist)
+schoolchoices = set(schoollist)
+varsitychoices = set(teamlist)
+sportchoices = set(sportlist)
 
 if result == True:
     messagebox.showinfo(title='Open...', message="Open pickle file you'd like to resume")
@@ -348,6 +366,11 @@ def repopulate_defaults(event):
         blanketEntry.insert(0, defaultsales)
     elif frameEntry != window.focus_get() and frameEntry.get() == '':
         frameEntry.insert(0, defaultsales)
+def caps(event):
+    fname.set(fname.get().title())
+    lname.set(lname.get().title())
+    parentfname.set(parentfname.get().title())
+    parentlname.set(parentlname.get().title())
 
 #set up placement for each line
 fnamerow = 0
@@ -447,44 +470,47 @@ fname= StringVar()
 fnameEntry = Entry(window, textvariable = fname,font=("Helvetica", 20))
 fnameEntry.grid(row=fnamerow, column=1, sticky= N+S+E+W)
 fnameEntry.bind("<FocusIn>", clear_widget)
+fnameEntry.bind("<KeyRelease>", caps)
 
 lname= StringVar()
 lnameEntry = Entry(window, textvariable = lname, font=("Helvetica", 20))
 lnameEntry.grid(row=lnamerow, column=1, sticky= N+S+E+W)
 lnameEntry.bind("<FocusIn>", clear_widget)
+lnameEntry.bind("<KeyRelease>", caps)
 
 num= StringVar()
 numEntry = Entry(window, textvariable = num, font=("Helvetica", 20))
 numEntry.grid(row=numrow, column=1, sticky= N+S+E+W)
 
 grade= StringVar()
-grade.set(9) # set the default option
+grade.set(gradelist[0]) # set the default option
 gradedropdown = OptionMenu(window, grade, *gradechoices)
 gradedropdown.grid(row=graderow, column=1, sticky= N+S+E+W)
 
 school = StringVar()
-school.set('Preston') # set the default option
+school.set(schoollist[0]) # set the default option
 schooldropdown = OptionMenu(window, school, *schoolchoices)
 schooldropdown.grid(row = schoolrow, column =1, sticky= N+S+E+W)
 
 sport = StringVar()
-sport.set('Football') # set the default option
+sport.set(sportlist[0]) # set the default option
 sportdropdown = OptionMenu(window, sport, *sportchoices)
 sportdropdown.grid(row = sportrow, column =1, sticky= N+S+E+W)
 
 varsity = StringVar()
-varsitychoices = { 'Varsity', 'JV', 'Freshman','N/A'}
-varsity.set('N/A') # set the default option
+varsity.set(teamlist[0]) # set the default option
 varsitydropdown = OptionMenu(window, varsity, *varsitychoices)
 varsitydropdown.grid(row = varsityrow, column =1, sticky= N+S+E+W)
 
 parentfname = StringVar()
 parentfnameEntry = Entry(window, textvariable = parentfname, font=("Helvetica", 20))
 parentfnameEntry.grid(row=parentfnamerow, column=1, sticky= N+S+E+W)
+parentfnameEntry.bind("<KeyRelease>", caps)
 
 parentlname = StringVar()
 parentlnameEntry = Entry(window, textvariable = parentlname, font=("Helvetica", 20))
 parentlnameEntry.grid(row=parentlnamerow, column=1, sticky= N+S+E+W)
+parentlnameEntry.bind("<KeyRelease>", caps)
 
 parentnumber = StringVar()
 parentnumberEntry = Entry(window, textvariable = parentnumber, font=("Helvetica", 20))
@@ -555,7 +581,6 @@ paymentamountEntry.bind('<FocusOut>', repopulate_defaults)
 
 notes = StringVar()
 notesEntry = Entry(window, textvariable = notes, font=("Helvetica", 20))
-notesEntry.insert(END, 0)
 notesEntry.grid(row=notesrow, column=1, sticky= N+S+E+W)
 notesEntry.bind("<FocusIn>", clear_widget)
 
