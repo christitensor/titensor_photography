@@ -8,7 +8,7 @@ from tkinter import messagebox
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from tkinter.simpledialog import askstring
+from tkinter.simpledialog import askstring, askinteger
 import pandas as pd
 import sys
 import numpy as np
@@ -20,6 +20,15 @@ window.title("Titensor Photography Registration")
 window.configure(background='yellow')
 today = datetime.date(datetime.now())
 result = messagebox.askyesno('Resume Session?', 'Would you like to go back to a prior session?')
+
+flexfield1 = 'Sport'
+sportchoices = { 'Football','Tennis', 'Soccer', 'Volleyball', 'Cross Country','Golf', 'Cheer'}
+flexfield2 = 'School'
+flexfield1list = ['Preston', 'Green Canyon', 'Ridgeline', 'Skyview', 'Logan', 'N/A']
+schoolchoices = set(flexfield1list)
+print(flexfield1list[0])
+flexfield3 = 'Grade'
+gradechoices = {9, 10, 11,12, 'Coach'}
 
 if result == True:
     messagebox.showinfo(title='Open...', message="Open pickle file you'd like to resume")
@@ -46,7 +55,7 @@ else:
     messagebox.showinfo(title='Backup...', message="Please navigate to where you want to backup")
     backup_save_path = askdirectory()
     #choose where to start control number from
-    control_number = 0
+    control_number = (askinteger('Control Numbeer', 'Please what you want the conrol number to start on')-1)
 defaultsales = 0
 defaultsalesvar= StringVar(window, value=str(defaultsales))
 #get the font path depending on the OS
@@ -449,19 +458,16 @@ numEntry = Entry(window, textvariable = num, font=("Helvetica", 20))
 numEntry.grid(row=numrow, column=1, sticky= N+S+E+W)
 
 grade= StringVar()
-gradechoices = {9, 10, 11,12, 'Coach'}
 grade.set(9) # set the default option
 gradedropdown = OptionMenu(window, grade, *gradechoices)
 gradedropdown.grid(row=graderow, column=1, sticky= N+S+E+W)
 
 school = StringVar()
-schoolchoices = { 'Preston', 'Green Canyon', 'Ridgeline', 'Skyview', 'Logan'}
 school.set('Preston') # set the default option
 schooldropdown = OptionMenu(window, school, *schoolchoices)
 schooldropdown.grid(row = schoolrow, column =1, sticky= N+S+E+W)
 
 sport = StringVar()
-sportchoices = { 'Football','Tennis', 'Soccer', 'Volleyball', 'Cross Country','Golf', 'Cheer'}
 sport.set('Football') # set the default option
 sportdropdown = OptionMenu(window, sport, *sportchoices)
 sportdropdown.grid(row = sportrow, column =1, sticky= N+S+E+W)
