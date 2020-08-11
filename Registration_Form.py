@@ -287,10 +287,6 @@ def export_team_by_number():
             os.system("lpr " + save_path + '/Roster By Number.csv')
         else:
             os.startfile(save_path + '/Roster By Number.csv', 'print')
-            if sys.platform == 'darwin':
-                os.system("lpr " + save_path + '/Roster By Number.csv')
-            else:
-                os.startfile(save_path + '/Roster By Number.csv', 'print')
 
 def export_team_by_grade():
     timeframe = messagebox.askyesno('Export team', 'Would you like to export for today only?')
@@ -329,10 +325,6 @@ def export_team_by_grade():
             os.system("lpr " + save_path + '/Roster By Grade.csv')
         else:
             os.startfile(save_path + '/Roster By Grade.csv', 'print')
-            if sys.platform == 'darwin':
-                os.system("lpr " + save_path + '/Roster By Grade.csv')
-            else:
-                os.startfile(save_path + '/Roster By Grade.csv', 'print')
 
 
 
