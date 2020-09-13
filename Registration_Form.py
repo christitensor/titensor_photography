@@ -64,9 +64,10 @@ else:
     #Get the file name
     name_of_file = askstring('What do you want to title this file?', 'File Name')
     #create an empty dictionary to later fill out
-    team = {'control_number':[], 'first_name':[], 'last_name':[], 'number':[], 'grade':[], 'sport':[], 'school':[],
+    team = {'control_number':[], 'first name':[], 'last name':[], 'number':[], 'grade':[], 'sport':[], 'school':[],
     'team':[], 'parent_first_name':[], 'parent_last_name':[], 'parent_phone_number':[], 'parent_email':[], 'eight_by_ten':[],
-    'team_photo':[], 'fifty_package':[], 'banner':[], 'blanket': [], 'frame':[], 'payment_type':[], 'payment_amount':[], 'notes':[], 'date':[]}
+    'team_photo':[], 'fifty_package':[], 'banner':[], 'blanket': [], 'frame':[], 'payment_type':[], 'payment_amount':[], 'notes':[], 'date':[], 'full name':[], 'resize-first name':[],
+            'resize-last name':[], 'resize-full name':[], 'rename':[], 'left_number':[], 'right_number':[]}
     #get path to save file to
     messagebox.showinfo(title='Save...', message="Please navigate to where you want to save today's report")
     save_path = askdirectory()
@@ -134,8 +135,14 @@ def generate():
                 os.startfile(save_path+'/'+control_number_text+"_"+fname.get()+'_'+ lname.get()+'.png', 'print')
     #add all the inputs to the dictionary
             #team.update( {num.get():{'First Name':fname.get(),'Last Name':lname.get(), 'Number':num.get(), 'Age': age.get(),'Sport': sport.get(), 'School':school.get()}} )
-            team['first_name'].append(fname.get())
-            team['last_name'].append(lname.get())
+            extracted_number = str(num.get())
+            if(len(extracted_number) == 2):
+                leftnumber = str(extracted_number)[:1]
+            else:
+                leftnumber = ''
+            rightnumber = str(extracted_number)[1:]
+            team['first name'].append(fname.get())
+            team['last name'].append(lname.get())
             team['number'].append(num.get())
             team['grade'].append(grade.get())
             team['sport'].append(sport.get())
@@ -156,6 +163,13 @@ def generate():
             team['payment_amount'].append(paymentamount.get())
             team['notes'].append(notes.get())
             team['date'].append(today)
+            team['full name'].append(str(fname.get()) + ' '+ str(lname.get()))
+            team['resize-first name'].append('XM')
+            team['resize-last name'].append('XM')
+            team['resize-full name'].append('XM')
+            team['rename'].append(str(control_number)+'_' +str(fname.get()) + ' '+ str(lname.get()))
+            team['left_number'].append(leftnumber)
+            team['right_number'].append(rightnumber)
 
             #team = {k: np.nan if not v else v for k, v in team.items()}
             for key, value in team.items():
@@ -219,7 +233,7 @@ def total_up():
         if timeframe == True:
             df = pd.DataFrame(team)
             df = df[df['date']==today]
-            df['full_name'] = df.first_name+' '+df.last_name
+            
             df['payment_amount'] = df.payment_amount.astype(int)
             cards = df[df['payment_type']=='Card']
             cash = df[df['payment_type']=='Cash']
@@ -233,7 +247,7 @@ def total_up():
             messagebox.showinfo("Totals", summary)
         else:
             df = pd.DataFrame(team)
-            df['full_name'] = df.first_name + '_' + df.last_name
+            
             df['payment_amount'] = df.payment_amount.astype(int)
             cards = df[df['payment_type'] == 'Card']
             cash = df[df['payment_type'] == 'Cash']
@@ -258,30 +272,30 @@ def export_team_by_number():
         if timeframe == True:
             df = pd.DataFrame(team)
             df = df[df['date'] == today]
-            df['full_name'] = df.first_name + ' ' + df.last_name
+            
             try:
-                sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list= sorted_list.sort_values(by =['sport',sort_key, 'full_name'], ascending = True)
-                sorted_list = sorted_list[['sport',sort_key, 'full_name']]
+                sorted_list= sorted_list.sort_values(by =['sport',sort_key, 'full name'], ascending = True)
+                sorted_list = sorted_list[['sport',sort_key, 'full name']]
             except:
-                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
-                sorted_list = sorted_list[[sort_key, 'full_name']]
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full name']]
         else:
             df = pd.DataFrame(team)
-            df['full_name'] = df.first_name + ' ' + df.last_name
+            
             try:
-                sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list = sorted_list.sort_values(by=['sport', sort_key, 'full_name'], ascending=True)
-                sorted_list = sorted_list[['sport', sort_key, 'full_name']]
+                sorted_list = sorted_list.sort_values(by=['sport', sort_key, 'full name'], ascending=True)
+                sorted_list = sorted_list[['sport', sort_key, 'full name']]
             except:
-                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
-                sorted_list = sorted_list[[sort_key, 'full_name']]
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full name']]
         sorted_list.to_csv(save_path+'/Roster By Number.csv', index=False)
         if sys.platform == 'darwin':
             os.system("lpr " + save_path + '/Roster By Number.csv')
@@ -296,30 +310,30 @@ def export_team_by_grade():
         if timeframe == True:
             df = pd.DataFrame(team)
             df = df[df['date'] == today]
-            df['full_name'] = df.first_name + ' ' + df.last_name
+            
             try:
-                sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list= sorted_list.sort_values(by =['sport',sort_key, 'full_name'], ascending = True)
-                sorted_list = sorted_list[['sport',sort_key, 'full_name']]
+                sorted_list= sorted_list.sort_values(by =['sport',sort_key, 'full name'], ascending = True)
+                sorted_list = sorted_list[['sport',sort_key, 'full name']]
             except:
-                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
-                sorted_list = sorted_list[[sort_key, 'full_name']]
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full name']]
         else:
             df = pd.DataFrame(team)
-            df['full_name'] = df.first_name + ' ' + df.last_name
+            
             try:
-                sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list = sorted_list.sort_values(by=['sport', sort_key, 'full_name'], ascending=True)
-                sorted_list = sorted_list[['sport', sort_key, 'full_name']]
+                sorted_list = sorted_list.sort_values(by=['sport', sort_key, 'full name'], ascending=True)
+                sorted_list = sorted_list[['sport', sort_key, 'full name']]
             except:
-                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full_name'])
+                sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list = sorted_list.sort_values(by=[sort_key, 'full_name'], ascending=Ture)
-                sorted_list = sorted_list[[sort_key, 'full_name']]
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full name'], ascending=Ture)
+                sorted_list = sorted_list[[sort_key, 'full name']]
         sorted_list.to_csv(save_path+'/Roster By Grade.csv', index=False)
         if sys.platform == 'darwin':
             os.system("lpr " + save_path + '/Roster By Grade.csv')
