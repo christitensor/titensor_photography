@@ -7,7 +7,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 gc = gs.service_account(filename="Sale Database.json")
 
 
-messagebox.showinfo(title='Open...', message="Open the file to upload")
+messagebox.showinfo(title='Open...', message="Open file to upload")
 dfpath = askopenfilename()
 df = pd.read_csv(dfpath)
 def export_to_sheets(worksheet_name,df,mode='r'):
@@ -22,6 +22,11 @@ def export_to_sheets(worksheet_name,df,mode='r'):
         return True
     else:
         return gd.get_as_dataframe(worksheet=ws)
+colsneeded = ['control_number', 'first name', 'last name', 'number', 'grade', 'sport', 'school', 'team', 'parent_first_name', 'parent_last_name', 'parent_phone_number', 'parent_email', 'eight_by_ten', 'team_photo', 'fifty_package', 'banner', 'blanket', 'frame', 'payment_type', 'payment_amount', 'notes', 'date', 'full name', 'resize-first name', 'resize-last name', 'resize-full name', 'rename', 'left_number', 'right_number']
+currentcols = list(df)
+missingcols =(list(list(set(colsneeded)-set(currentcols)) + list(set(currentcols)-set(colsneeded))))
+df=pd.concat([df,pd.DataFrame(columns=missingcols)], sort = True)
+df = df[colsneeded]
 
 export_to_sheets("Database",df,'a')
 messagebox.showinfo(title='Success!', message="Your file has been uploaded")
