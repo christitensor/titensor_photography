@@ -9,7 +9,11 @@ gc = gs.service_account(filename="Sale Database.json")
 
 messagebox.showinfo(title='Open...', message="Open file to upload")
 dfpath = askopenfilename()
-df = pd.read_csv(dfpath)
+try:
+    df = pd.read_csv(dfpath)
+except:
+    df = pd.read_excel(dfpath)
+    
 def export_to_sheets(worksheet_name,df,mode='r'):
     ws = gc.open("Database").worksheet("Data")
     if(mode=='w'):
