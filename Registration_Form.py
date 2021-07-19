@@ -448,7 +448,7 @@ eightbytenlab.grid(row=eightbytenrow, column= 0, sticky= N+S+E+W)
 teamphotolab = Label(window, text = 'Team Photo', font = ('Helvitica', 12))
 teamphotolab.grid(row=teamphotorow, column= 0, sticky= N+S+E+W)
 
-fiftylab = Label(window, text = '$50 Package', font = ('Helvitica', 12))
+fiftylab = Label(window, text = '$55 Package', font = ('Helvitica', 12))
 fiftylab.grid(row=fiftyrow, column= 0, sticky= N+S+E+W)
 
 bannerlab = Label(window, text = 'Banner $40', font = ('Helvitica', 12))
