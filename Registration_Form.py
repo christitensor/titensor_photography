@@ -17,7 +17,7 @@ from datetime import datetime
 #sets up first main window
 window = Tk()
 window.title("Titensor Photography Registration")
-window.configure(background='yellow')
+window.configure(background='hotpink')
 today = datetime.date(datetime.now())
 result = messagebox.askyesno('Resume Session?', 'Would you like to go back to a prior session?')
 
@@ -66,7 +66,7 @@ else:
     #create an empty dictionary to later fill out
     team = {'control_number':[], 'first name':[], 'last name':[], 'number':[], 'grade':[], 'sport':[], 'school':[],
     'team':[], 'parent_first_name':[], 'parent_last_name':[], 'parent_phone_number':[], 'parent_email':[], 'eight_by_ten':[],
-    'team_photo':[], 'fifty_package':[], 'banner':[], 'blanket': [], 'frame':[], 'payment_type':[], 'payment_amount':[], 'notes':[], 'date':[], 'full name':[], 'resize-first name':[],
+    'team_photo':[], 'fifty_package':[], 'digital_copy':[], 'banner':[], 'blanket': [], 'frame':[], 'payment_type':[], 'payment_amount':[], 'notes':[], 'date':[], 'full name':[], 'resize-first name':[],
             'resize-last name':[], 'resize-full name':[], 'rename':[], 'left_number':[], 'right_number':[]}
     #get path to save file to
     messagebox.showinfo(title='Save...', message="Please navigate to where you want to save today's report")
@@ -156,6 +156,7 @@ def generate():
             team['eight_by_ten'].append(eightbyten.get())
             team['team_photo'].append(teamphoto.get())
             team['fifty_package'].append(fifty.get())
+            team['digital_package'].append(digital.get())
             team['banner'].append(banner.get())
             team['blanket'].append(blanket.get())
             team['frame'].append(frame.get())
@@ -204,7 +205,7 @@ def generate():
                 pass
             #clear out fields
             fields_to_clear = [fnameEntry, lnameEntry, numEntry, parentfnameEntry, parentlnameEntry, parentnumberEntry, emailEntry,
-                               eightbytenEntry, teamphotoEntry, fiftyEntry, bannerEntry, blanketEntry, frameEntry, paymentamountEntry, notesEntry]
+                               eightbytenEntry, teamphotoEntry, fiftyEntry, digitalEntry, bannerEntry, blanketEntry, frameEntry, paymentamountEntry, notesEntry]
             for field in fields_to_clear:
                 field.delete(0, END)
             payment.set('Did not pay')
@@ -351,6 +352,8 @@ def clear_widget(event):
         teamphotoEntry.delete(0, END)
     elif fiftyEntry == fiftyEntry.focus_get():
         fiftyEntry.delete(0, END)
+    elif digitalEntry == digitalEntry.focus_get():
+        digitalEntry.delete(0, END)
     elif bannerEntry == bannerEntry.focus_get():
         bannerEntry.delete(0, END)
     elif blanketEntry == blanketEntry.focus_get():
@@ -366,6 +369,8 @@ def repopulate_defaults(event):
         teamphotoEntry.insert(0, defaultsales)
     elif fiftyEntry != window.focus_get() and fiftyEntry.get() == '':
         fiftyEntry.insert(0, defaultsales)
+    elif digitalEntry != window.focus_get() and digitalEntry.get() == '':
+        digitalEntry.insert(0, defaultsales)
     elif bannerEntry != window.focus_get() and bannerEntry.get() == '':
         bannerEntry.insert(0, defaultsales)
     elif blanketEntry != window.focus_get() and blanketEntry.get() == '':
@@ -395,7 +400,8 @@ spacerow = 1 + emailrow
 eightbytenrow = 1+ spacerow
 teamphotorow = 1 + eightbytenrow
 fiftyrow = 1 + teamphotorow
-bannerrow = 1 + fiftyrow
+digitalrow = 1 + fiftyrow
+bannerrow = 1 + digitalrow
 blanketrow = 1 + bannerrow
 framerow = 1 + blanketrow
 paymentrow = 1 + framerow
@@ -450,6 +456,9 @@ teamphotolab.grid(row=teamphotorow, column= 0, sticky= N+S+E+W)
 
 fiftylab = Label(window, text = '$55 Package', font = ('Helvitica', 12))
 fiftylab.grid(row=fiftyrow, column= 0, sticky= N+S+E+W)
+
+digitallab = Label(window, text = 'Digital Copy', font = ('Helvitica', 12))
+digitallab.grid(row=digitalrow, column= 0, sticky= N+S+E+W)
 
 bannerlab = Label(window, text = 'Banner $40', font = ('Helvitica', 12))
 bannerlab.grid(row=bannerrow, column= 0, sticky= N+S+E+W)
@@ -549,6 +558,13 @@ fiftyEntry.insert(END, 0)
 fiftyEntry.grid(row=fiftyrow, column=1, sticky= N+S+E+W)
 fiftyEntry.bind("<FocusIn>", clear_widget)
 fiftyEntry.bind('<FocusOut>', repopulate_defaults)
+
+digital = StringVar()
+digitalEntry = Entry(window, textvariable = digital, font=("Helvetica", 20))
+digitalEntry.insert(END, 0)
+digitalEntry.grid(row=digitalrow, column=1, sticky= N+S+E+W)
+digitalEntry.bind("<FocusIn>", clear_widget)
+digitalEntry.bind('<FocusOut>', repopulate_defaults)
 
 banner = StringVar()
 bannerEntry = Entry(window, textvariable = banner, font=("Helvetica", 20))
