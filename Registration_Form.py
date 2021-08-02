@@ -156,7 +156,7 @@ def generate():
             team['eight_by_ten'].append(eightbyten.get())
             team['team_photo'].append(teamphoto.get())
             team['fifty_package'].append(fifty.get())
-            team['digital_package'].append(digital.get())
+            team['digital_copy'].append(digital.get())
             team['banner'].append(banner.get())
             team['blanket'].append(blanket.get())
             team['frame'].append(frame.get())
@@ -340,7 +340,12 @@ def export_team_by_grade():
             os.system("lpr " + save_path + '/Roster By Grade.csv')
         else:
             os.startfile(save_path + '/Roster By Grade.csv', 'print')
-
+#testing template output
+'''def end_session:
+    formatted_df = pd.DataFrame(team)
+    formatted_df = [['control_number', 'first_name', 'last name', 'number', 'grade', 'sport', 'school', 'team', 'eight_by_ten', 'team_photo',
+                     'fifty_package', 'banner', 'banner', 'blanket', 'frame', 'payment_type', 'payment_amount', 'notes']]
+ '''
 
 
 def clear_widget(event):
