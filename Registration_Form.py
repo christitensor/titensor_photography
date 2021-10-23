@@ -62,7 +62,7 @@ if result == True:
     control_number = team['control_number'][-1]
 else:
     #Get the file name
-    name_of_file = askstring('What do you want to title this file?', 'File Name')
+    name_of_file = askstring('File Name', 'What do you want to title this file?')
     #create an empty dictionary to later fill out
     team = {'control_number':[], 'first name':[], 'last name':[], 'number':[], 'grade':[], 'sport':[], 'school':[],
     'team':[], 'parent_first_name':[], 'parent_last_name':[], 'parent_phone_number':[], 'parent_email':[], 'eight_by_ten':[],
@@ -95,22 +95,23 @@ def generate():
             global myQr
             global control_number
             #gathers data to create code with
-            data=fname.get()+"_"+lname.get()+"_"+grade.get()+"_"+num.get()+"_"+sport.get()+"_"+school.get()+'_'+paymentamount.get()+'_'+payment.get()
+            control_number += 1
+            control_number_text = str(control_number)
+            data=control_number_text+"_"+fname.get()+"_"+lname.get()+"_"+grade.get()+"_"+num.get()+"_"+sport.get()+"_"+school.get()+'_'+paymentamount.get()+'_'+payment.get()
             #creats QR codee
             myQr= pyqrcode.create(data)
             qrImage= myQr.xbm(scale=6)
             global photo
             photo = BitmapImage(data= qrImage)
             myQr.png('qrcode.png')
-            control_number += 1
-            control_number_text = str(control_number)
+
             #next part comes from https://stackoverflow.com/questions/43295189/extending-a-image-and-adding-text-on-the-extended-area-using-python-pil
             #create card
             height = 800
             interval = 250
             paperwidth = 2550
             paperheight = 3300
-            center = (paperwidth/2)-(paperwidth/6)
+            center = (paperwidth/2)-(paperwidth/3)
             # next part comes from https://stackoverflow.com/questions/43295189/extending-a-image-and-adding-text-on-the-extended-area-using-python-pil
             font = ImageFont.truetype(font=font_path, size=200)
             background = Image.new('RGBA', (paperwidth, paperheight), (255, 255, 255, 255))
@@ -120,12 +121,13 @@ def generate():
             qr = qr.resize((1000, 1000), Image.ANTIALIAS)
             background.paste(qr, ((round(paperwidth / 2)), 20))
             draw.text((center, (height + (interval * 1))), control_number_text, (0, 0, 0), font=ImageFont.truetype(font=font_path, size=300))
-            draw.text((center, (height + (interval * 2))), fname.get(), (0, 0, 0), font=font)
-            draw.text((center, (height + (interval * 3))), lname.get(), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 4))), grade.get(), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 5))), num.get(), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 6))), sport.get(), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 7))), school.get(), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 2))), ('FName - ' + fname.get()), (0, 0, 0), font=font)
+            draw.text((center, (height + (interval * 3))), ('LName - ' + lname.get()), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 4))), ('Grade - ' + grade.get()), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 5))), ('Number - ' + num.get()), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 6))), ('Sport - ' +sport.get()), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 7))), ('School - ' +school.get()), (25, 25, 25), font=font)
+            draw.text((center, (height + (interval * 8))), ('Team - ' +varsity.get()), (25, 25, 25), font=font)
             #save the card as a png
             background.save(save_path+'/'+control_number_text+"_"+fname.get()+"_" +lname.get()+'.png')
             #print the card to default printer
@@ -333,7 +335,7 @@ def export_team_by_grade():
             except:
                 sorted_list_pivot = pd.pivot_table(df, index=[sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
-                sorted_list = sorted_list.sort_values(by=[sort_key, 'full name'], ascending=Ture)
+                sorted_list = sorted_list.sort_values(by=[sort_key, 'full name'], ascending=True)
                 sorted_list = sorted_list[[sort_key, 'full name']]
         sorted_list.to_csv(save_path+'/Roster By Grade.csv', index=False)
         if sys.platform == 'darwin':
