@@ -142,7 +142,7 @@ def generate():
                 leftnumber = str(extracted_number)[:1]
             else:
                 leftnumber = ''
-            rightnumber = str(extracted_number)[1:]
+            rightnumber = str(extracted_number)[-1:]
             team['first name'].append(fname.get())
             team['last name'].append(lname.get())
             team['number'].append(num.get())
