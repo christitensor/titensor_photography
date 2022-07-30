@@ -13,6 +13,7 @@ import pandas as pd
 import sys
 import numpy as np
 from datetime import datetime
+import phonenumbers
 
 #sets up first main window
 window = Tk()
@@ -92,126 +93,130 @@ def generate():
         password = askstring('Thank You!', 'Enter password', show='*')
         #change password below
         if password == 'a':
-            global myQr
-            global control_number
-            #gathers data to create code with
-            control_number += 1
-            control_number_text = str(control_number)
-            data=control_number_text+"_"+fname.get()+"_"+lname.get()+"_"+grade.get()+"_"+num.get()+"_"+sport.get()+"_"+school.get()+'_'+paymentamount.get()+'_'+payment.get()
-            #creats QR codee
-            myQr= pyqrcode.create(data)
-            qrImage= myQr.xbm(scale=6)
-            global photo
-            photo = BitmapImage(data= qrImage)
-            myQr.png('qrcode.png')
+            parsed_number = phonenumbers.parse(parentnumber.get(), 'US')
+            is_valid_number = phonenumbers.is_valid_number(parsed_number)
+            if is_valid_number == True:
+                global myQr
+                global control_number
+                #gathers data to create code with
+                control_number += 1
+                control_number_text = str(control_number)
+                data=control_number_text+"_"+fname.get()+"_"+lname.get()+"_"+grade.get()+"_"+num.get()+"_"+sport.get()+"_"+school.get()+'_'+paymentamount.get()+'_'+payment.get()
+                #creats QR codee
+                myQr= pyqrcode.create(data)
+                qrImage= myQr.xbm(scale=6)
+                global photo
+                photo = BitmapImage(data= qrImage)
+                myQr.png('qrcode.png')
 
-            #next part comes from https://stackoverflow.com/questions/43295189/extending-a-image-and-adding-text-on-the-extended-area-using-python-pil
-            #create card
-            height = 800
-            interval = 250
-            paperwidth = 2550
-            paperheight = 3300
-            center = (paperwidth/2)-(paperwidth/3)
-            # next part comes from https://stackoverflow.com/questions/43295189/extending-a-image-and-adding-text-on-the-extended-area-using-python-pil
-            font = ImageFont.truetype(font=font_path, size=200)
-            background = Image.new('RGBA', (paperwidth, paperheight), (255, 255, 255, 255))
-            draw = ImageDraw.Draw(background)
-            #adds the different text lines to the card
-            qr = Image.open('qrcode.png')
-            qr = qr.resize((1000, 1000), Image.ANTIALIAS)
-            background.paste(qr, ((round(paperwidth / 2)), 20))
-            draw.text((center, (height + (interval * 1))), control_number_text, (0, 0, 0), font=ImageFont.truetype(font=font_path, size=300))
-            draw.text((center, (height + (interval * 2))), ('FName - ' + fname.get()), (0, 0, 0), font=font)
-            draw.text((center, (height + (interval * 3))), ('LName - ' + lname.get()), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 4))), ('Grade - ' + grade.get()), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 5))), ('Number - ' + num.get()), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 6))), ('Sport - ' +sport.get()), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 7))), ('School - ' +school.get()), (25, 25, 25), font=font)
-            draw.text((center, (height + (interval * 8))), ('Team - ' +varsity.get()), (25, 25, 25), font=font)
-            #save the card as a png
-            background.save(save_path+'/'+control_number_text+"_"+fname.get()+"_" +lname.get()+'.png')
-            #print the card to default printer
-            if sys.platform == 'darwin':
-                os.system("lpr "+save_path+'/'+control_number_text+"_"+fname.get()+ '_'+lname.get()+'.png')
-            else:
-                os.startfile(save_path+'/'+control_number_text+"_"+fname.get()+'_'+ lname.get()+'.png', 'print')
-    #add all the inputs to the dictionary
-            #team.update( {num.get():{'First Name':fname.get(),'Last Name':lname.get(), 'Number':num.get(), 'Age': age.get(),'Sport': sport.get(), 'School':school.get()}} )
-            extracted_number = str(num.get())
-            if(len(extracted_number) == 2):
-                leftnumber = str(extracted_number)[:1]
-            else:
-                leftnumber = ''
-            rightnumber = str(extracted_number)[-1:]
-            team['first name'].append(fname.get())
-            team['last name'].append(lname.get())
-            team['number'].append(num.get())
-            team['grade'].append(grade.get())
-            team['sport'].append(sport.get())
-            team['school'].append(school.get())
-            team['control_number'].append((control_number))
-            team['team'].append(varsity.get())
-            team['parent_first_name'].append(parentfname.get())
-            team['parent_last_name'].append(parentlname.get())
-            team['parent_phone_number'].append((parentnumber.get()))
-            team['parent_email'].append(email.get())
-            team['eight_by_ten'].append(eightbyten.get())
-            team['team_photo'].append(teamphoto.get())
-            team['fifty_package'].append(fifty.get())
-            team['digital_copy'].append(digital.get())
-            team['banner'].append(banner.get())
-            team['blanket'].append(blanket.get())
-            team['frame'].append(frame.get())
-            team['payment_type'].append(payment.get())
-            team['payment_amount'].append(paymentamount.get())
-            team['notes'].append(notes.get())
-            team['date'].append(today)
-            team['full name'].append(str(fname.get()) + ' '+ str(lname.get()))
-            team['resize-first name'].append('XM')
-            team['resize-last name'].append('XM')
-            team['resize-full name'].append('XM')
-            team['rename'].append(str(control_number)+'_' +str(fname.get()) + ' '+ str(lname.get()))
-            team['left_number'].append(leftnumber)
-            team['right_number'].append(rightnumber)
+                #next part comes from https://stackoverflow.com/questions/43295189/extending-a-image-and-adding-text-on-the-extended-area-using-python-pil
+                #create card
+                height = 800
+                interval = 250
+                paperwidth = 2550
+                paperheight = 3300
+                center = (paperwidth/2)-(paperwidth/3)
+                # next part comes from https://stackoverflow.com/questions/43295189/extending-a-image-and-adding-text-on-the-extended-area-using-python-pil
+                font = ImageFont.truetype(font=font_path, size=200)
+                background = Image.new('RGBA', (paperwidth, paperheight), (255, 255, 255, 255))
+                draw = ImageDraw.Draw(background)
+                #adds the different text lines to the card
+                qr = Image.open('qrcode.png')
+                qr = qr.resize((1000, 1000), Image.ANTIALIAS)
+                background.paste(qr, ((round(paperwidth / 2)), 20))
+                draw.text((center, (height + (interval * 1))), control_number_text, (0, 0, 0), font=ImageFont.truetype(font=font_path, size=300))
+                draw.text((center, (height + (interval * 2))), ('FName - ' + fname.get()), (0, 0, 0), font=font)
+                draw.text((center, (height + (interval * 3))), ('LName - ' + lname.get()), (25, 25, 25), font=font)
+                draw.text((center, (height + (interval * 4))), ('Grade - ' + grade.get()), (25, 25, 25), font=font)
+                draw.text((center, (height + (interval * 5))), ('Number - ' + num.get()), (25, 25, 25), font=font)
+                draw.text((center, (height + (interval * 6))), ('Sport - ' +sport.get()), (25, 25, 25), font=font)
+                draw.text((center, (height + (interval * 7))), ('School - ' +school.get()), (25, 25, 25), font=font)
+                draw.text((center, (height + (interval * 8))), ('Team - ' +varsity.get()), (25, 25, 25), font=font)
+                #save the card as a png
+                background.save(save_path+'/'+control_number_text+"_"+fname.get()+"_" +lname.get()+'.png')
+                #print the card to default printer
+                if sys.platform == 'darwin':
+                    os.system("lpr "+save_path+'/'+control_number_text+"_"+fname.get()+ '_'+lname.get()+'.png')
+                else:
+                    os.startfile(save_path+'/'+control_number_text+"_"+fname.get()+'_'+ lname.get()+'.png', 'print')
+        #add all the inputs to the dictionary
+                #team.update( {num.get():{'First Name':fname.get(),'Last Name':lname.get(), 'Number':num.get(), 'Age': age.get(),'Sport': sport.get(), 'School':school.get()}} )
+                extracted_number = str(num.get())
+                if(len(extracted_number) == 2):
+                    leftnumber = str(extracted_number)[:1]
+                else:
+                    leftnumber = ''
+                rightnumber = str(extracted_number)[-1:]
+                team['first name'].append(fname.get())
+                team['last name'].append(lname.get())
+                team['number'].append(num.get())
+                team['grade'].append(grade.get())
+                team['sport'].append(sport.get())
+                team['school'].append(school.get())
+                team['control_number'].append((control_number))
+                team['team'].append(varsity.get())
+                team['parent_first_name'].append(parentfname.get())
+                team['parent_last_name'].append(parentlname.get())
+                team['parent_phone_number'].append((parentnumber.get()))
+                team['parent_email'].append(email.get())
+                team['eight_by_ten'].append(eightbyten.get())
+                team['team_photo'].append(teamphoto.get())
+                team['fifty_package'].append(fifty.get())
+                team['digital_copy'].append(digital.get())
+                team['banner'].append(banner.get())
+                team['blanket'].append(blanket.get())
+                team['frame'].append(frame.get())
+                team['payment_type'].append(payment.get())
+                team['payment_amount'].append(paymentamount.get())
+                team['notes'].append(notes.get())
+                team['date'].append(today)
+                team['full name'].append(str(fname.get()) + ' '+ str(lname.get()))
+                team['resize-first name'].append('XM')
+                team['resize-last name'].append('XM')
+                team['resize-full name'].append('XM')
+                team['rename'].append(str(control_number)+'_' +str(fname.get()) + ' '+ str(lname.get()))
+                team['left_number'].append(leftnumber)
+                team['right_number'].append(rightnumber)
 
-            #team = {k: np.nan if not v else v for k, v in team.items()}
-            for key, value in team.items():
-                if value == '':
-                    team[key] = np.nan
-            #, 'Last Name': lname.get(), 'Number': num.get(),'Age': age.get(), 'Sport': sport.get(), 'School': school.get()})
-            #save to pickle
+                #team = {k: np.nan if not v else v for k, v in team.items()}
+                for key, value in team.items():
+                    if value == '':
+                        team[key] = np.nan
+                #, 'Last Name': lname.get(), 'Number': num.get(),'Age': age.get(), 'Sport': sport.get(), 'School': school.get()})
+                #save to pickle
 
-            completeName = os.path.join(save_path, name_of_file+".pickle")
-
-            file1 = open(completeName, "wb")
-
-
-            with open(completeName, 'wb') as handle:
-                pickle.dump(team, file1)
-            file1.close()
-            #add to dataframe and save as a csv
-            pd.DataFrame(team).to_csv(save_path + '/' + name_of_file + '.csv',index=False)
-
-            #backup files
-            try:
-                completeName = os.path.join(backup_save_path, name_of_file + ".pickle")
+                completeName = os.path.join(save_path, name_of_file+".pickle")
 
                 file1 = open(completeName, "wb")
+
 
                 with open(completeName, 'wb') as handle:
                     pickle.dump(team, file1)
                 file1.close()
-                # add to dataframe and save as a csv
-                pd.DataFrame(team).to_csv(backup_save_path + '/' + name_of_file + '.csv', index=False)
-            except:
-                pass
-            #clear out fields
-            fields_to_clear = [fnameEntry, lnameEntry, numEntry, parentfnameEntry, parentlnameEntry, parentnumberEntry, emailEntry,
-                               eightbytenEntry, teamphotoEntry, fiftyEntry, digitalEntry, bannerEntry, blanketEntry, frameEntry, paymentamountEntry, notesEntry]
-            for field in fields_to_clear:
-                field.delete(0, END)
-            payment.set('Did not pay')
+                #add to dataframe and save as a csv
+                pd.DataFrame(team).to_csv(save_path + '/' + name_of_file + '.csv',index=False)
 
+                #backup files
+                try:
+                    completeName = os.path.join(backup_save_path, name_of_file + ".pickle")
+
+                    file1 = open(completeName, "wb")
+
+                    with open(completeName, 'wb') as handle:
+                        pickle.dump(team, file1)
+                    file1.close()
+                    # add to dataframe and save as a csv
+                    pd.DataFrame(team).to_csv(backup_save_path + '/' + name_of_file + '.csv', index=False)
+                except:
+                    pass
+                #clear out fields
+                fields_to_clear = [fnameEntry, lnameEntry, numEntry, parentfnameEntry, parentlnameEntry, parentnumberEntry, emailEntry,
+                                   eightbytenEntry, teamphotoEntry, fiftyEntry, digitalEntry, bannerEntry, blanketEntry, frameEntry, paymentamountEntry, notesEntry]
+                for field in fields_to_clear:
+                    field.delete(0, END)
+                payment.set('Did not pay')
+            else:
+                messagebox.showinfo("Incorrect Phone Number", "Please input a valid phone number")
         else:
             messagebox.showinfo("Incorrect Password", "Please input the correct password")
 
@@ -221,7 +226,7 @@ def generate():
         showCode()
     except:
         pass
-        
+
 
 def showCode():
     #function to show the QR code
@@ -236,7 +241,7 @@ def total_up():
         if timeframe == True:
             df = pd.DataFrame(team)
             df = df[df['date']==today]
-            
+
             df['payment_amount'] = df.payment_amount.astype(int)
             cards = df[df['payment_type']=='Card']
             cash = df[df['payment_type']=='Cash']
@@ -250,7 +255,7 @@ def total_up():
             messagebox.showinfo("Totals", summary)
         else:
             df = pd.DataFrame(team)
-            
+
             df['payment_amount'] = df.payment_amount.astype(int)
             cards = df[df['payment_type'] == 'Card']
             cash = df[df['payment_type'] == 'Cash']
@@ -275,7 +280,7 @@ def export_team_by_number():
         if timeframe == True:
             df = pd.DataFrame(team)
             df = df[df['date'] == today]
-            
+
             try:
                 sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
@@ -288,7 +293,7 @@ def export_team_by_number():
                 sorted_list = sorted_list[[sort_key, 'full name']]
         else:
             df = pd.DataFrame(team)
-            
+
             try:
                 sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
@@ -313,7 +318,7 @@ def export_team_by_grade():
         if timeframe == True:
             df = pd.DataFrame(team)
             df = df[df['date'] == today]
-            
+
             try:
                 sorted_list_pivot = pd.pivot_table(df, index=['sport',sort_key,'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
@@ -326,7 +331,7 @@ def export_team_by_grade():
                 sorted_list = sorted_list[[sort_key, 'full name']]
         else:
             df = pd.DataFrame(team)
-            
+
             try:
                 sorted_list_pivot = pd.pivot_table(df, index=['sport', sort_key, 'full name'])
                 sorted_list = sorted_list_pivot.reset_index()
@@ -419,70 +424,70 @@ submitrow = 2 + notesrow
 
 #setting up the window some more
 #this adds all of the labels on the left side
-fnamelab = Label(window, text="First Name",  font=("Helvetica", 20))
+fnamelab = Label(window, text="First Name",  font=("Helvetica", 20), bg = 'hotpink')
 fnamelab.grid(row=fnamerow, column= 0, sticky= N+S+E+W)
 
-lnamelab = Label(window, text="Last Name",  font=("Helvetica", 20))
+lnamelab = Label(window, text="Last Name",  font=("Helvetica", 20), bg = 'hotpink')
 lnamelab.grid(row=lnamerow, column= 0, sticky= N+S+E+W)
 
-numlab = Label(window, text="Jersey Number",  font=("Helvetica", 20))
+numlab = Label(window, text="Jersey Number",  font=("Helvetica", 20), bg = 'hotpink')
 numlab.grid(row=numrow, column= 0, sticky= N+S+E+W)
 
-gradelab = Label(window, text="Grade",  font=("Helvetica", 20))
+gradelab = Label(window, text="Grade",  font=("Helvetica", 20), bg = 'hotpink')
 gradelab.grid(row=graderow, column= 0, sticky= N+S+E+W)
 
-schoollab = Label(window, text="School",  font=("Helvetica", 20))
+schoollab = Label(window, text="School",  font=("Helvetica", 20), bg = 'hotpink')
 schoollab.grid(row=schoolrow, column= 0, sticky= N+S+E+W)
 
-sportlab = Label(window, text="Sport",  font=("Helvetica", 20))
+sportlab = Label(window, text="Sport",  font=("Helvetica", 20), bg = 'hotpink')
 sportlab.grid(row=sportrow, column= 0, sticky= N+S+E+W)
 
-varsitylab = Label(window, text="Team",  font=("Helvetica", 20))
+varsitylab = Label(window, text="Team",  font=("Helvetica", 20), bg = 'hotpink')
 varsitylab.grid(row=varsityrow, column= 0, sticky= N+S+E+W)
 
-parentfnamelab = Label(window, text="Parent First Name",  font=("Helvetica", 20))
+parentfnamelab = Label(window, text="Parent First Name",  font=("Helvetica", 20), bg = 'hotpink')
 parentfnamelab.grid(row=parentfnamerow, column= 0, sticky= N+S+E+W)
 
-parentlnamelab = Label(window, text="Parent Last Name",  font=("Helvetica", 20))
+parentlnamelab = Label(window, text="Parent Last Name",  font=("Helvetica", 20), bg = 'hotpink')
 parentlnamelab.grid(row=parentlnamerow, column= 0, sticky= N+S+E+W)
 
-parentnumberlab = Label(window, text="Parent Phone Number",  font=("Helvetica", 20))
+parentnumberlab = Label(window, text="Parent Phone Number",  font=("Helvetica", 20), bg = 'hotpink')
 parentnumberlab.grid(row=parentnumberrow, column= 0, sticky= N+S+E+W)
 
-emaillab = Label(window, text="Parent Email",  font=("Helvetica", 20))
+emaillab = Label(window, text="Parent Email",  font=("Helvetica", 20), bg = 'hotpink')
 emaillab.grid(row=emailrow, column= 0, sticky= N+S+E+W)
 
-spacelab = Label(window, text="*PROCEED TO THIS POINT",  font=("Helvetica", 25))
+spacelab = Label(window, text="STOP HERE",  font=("Helvetica", 25, "bold italic"), bg = '#6cffb7')
 spacelab.grid(row=spacerow, column= 0, sticky= N+S+E+W)
 
-eightbytenlab = Label(window, text="8x10",  font=("Helvetica", 20))
+eightbytenlab = Label(window, text="8x10",  font=("Helvetica", 12), bg = 'hotpink')
 eightbytenlab.grid(row=eightbytenrow, column= 0, sticky= N+S+E+W)
 
-teamphotolab = Label(window, text = 'Team Photo', font = ('Helvitica', 12))
+teamphotolab = Label(window, text = 'Team Photo', font = ('Helvitica', 12), bg = 'hotpink')
 teamphotolab.grid(row=teamphotorow, column= 0, sticky= N+S+E+W)
 
-fiftylab = Label(window, text = '$55 Package', font = ('Helvitica', 12))
+fiftylab = Label(window, text = '$55 Package', font = ('Helvitica', 12), bg = 'hotpink')
 fiftylab.grid(row=fiftyrow, column= 0, sticky= N+S+E+W)
 
-digitallab = Label(window, text = 'Digital Copy', font = ('Helvitica', 12))
+digitallab = Label(window, text = 'Digital Copy', font = ('Helvitica', 12), bg = 'hotpink')
 digitallab.grid(row=digitalrow, column= 0, sticky= N+S+E+W)
 
-bannerlab = Label(window, text = 'Banner $40', font = ('Helvitica', 12))
+bannerlab = Label(window, text = 'Banner $40', font = ('Helvitica', 12), bg = 'hotpink')
 bannerlab.grid(row=bannerrow, column= 0, sticky= N+S+E+W)
 
-blanketlab = Label(window, text = 'Blanket $70', font = ('Helvitica', 12))
+blanketlab = Label(window, text = 'Blanket $70', font = ('Helvitica', 12), bg = 'hotpink')
 blanketlab.grid(row=blanketrow, column= 0, sticky= N+S+E+W)
 
-framelab = Label(window, text = 'Frame $20', font = ('Helvitica', 12))
+framelab = Label(window, text = 'Frame $20', font = ('Helvitica', 12), bg = 'hotpink')
 framelab.grid(row=framerow, column= 0, sticky= N+S+E+W)
 
-paymentlab = Label(window, text="Payment Type",  font=("Helvetica", 20))
+paymentlab = Label(window, text="Payment Type",  font=("Helvetica", 20), bg = 'hotpink')
 paymentlab.grid(row=paymentrow, column= 0, sticky= N+S+E+W)
 
-paymentamountlab = Label(window, text="Payment Amount",  font=("Helvetica", 20))
+paymentamountlab = Label(window, text="Payment Amount",  font=("Helvetica", 20), bg = 'hotpink')
 paymentamountlab.grid(row=paymentamountrow, column= 0, sticky= N+S+E+W)
 
-noteslab = Label(window, text="Notes",  font=("Helvetica", 20))
+noteslab = Label(window, text="Notes",  font=("Helvetica", 20), bg = 'hotpink')
 noteslab.grid(row=notesrow, column= 0, sticky= N+S+E+W)
 
 ##############################################################################
@@ -542,7 +547,7 @@ email = StringVar()
 emailEntry = Entry(window, textvariable = email, font=("Helvetica", 20))
 emailEntry.grid(row=emailrow, column=1, sticky= N+S+E+W)
 
-spacelab = Label(window, text="the pretty lady will help you from here",  font=("Helvetica", 25))
+spacelab = Label(window, font=("Helvetica", 25), bg = '#6cffb7') #text="the pretty lady will help you from here",  font=("Helvetica", 25))
 spacelab.grid(row=spacerow, column= 1, sticky= N+S+E+W)
 
 eightbyten = StringVar()
@@ -613,11 +618,11 @@ notesEntry = Entry(window, textvariable = notes, font=("Helvetica", 20))
 notesEntry.grid(row=notesrow, column=1, sticky= N+S+E+W)
 notesEntry.bind("<FocusIn>", clear_widget)
 
-createButton = Button(window, text= "Submit", font=("Helvetica", 12), width= 15,command= generate)
-createButton.grid(row=submitrow, column=0, sticky= N+S+E+W)
+createButton = Button(window, text= "Submit", font=("Helvetica", 20, 'bold italic'), bg = '#6cefff', width= 15,command= generate)
+createButton.grid(row=submitrow, column=1, sticky= N+S+E+W)
 
 totalButton = Button(window, text= "Total Up", font=("Helvetica", 12), width= 15,command= total_up)
-totalButton.grid(row=submitrow, column=1, sticky= N+S+E+W)
+totalButton.grid(row=paymentamountrow, column=2, sticky= N+S+E+W)
 
 printteamgradeButton = Button(window, text= "Export Team - Grade", font=("Helvetica", 12), width= 5,command= export_team_by_grade)
 printteamgradeButton.grid(row=submitrow, column=2, sticky= N+S+E+W)
