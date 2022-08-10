@@ -8,3 +8,5 @@ Current Projects:
 *Check In - complete
 
 *Database Upload - complete
+
+*QR Code/Facial Recognition - in progress
