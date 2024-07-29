@@ -67,7 +67,7 @@ else:
     #create an empty dictionary to later fill out
     team = {'control_number':[], 'first name':[], 'last name':[], 'number':[], 'grade':[], 'sport':[], 'school':[],
     'team':[], 'parent_first_name':[], 'parent_last_name':[], 'parent_phone_number':[], 'parent_email':[], 'eight_by_ten':[],
-    'team_photo':[], 'fifty_package':[], 'digital_copy':[], 'banner':[], 'blanket': [], 'frame':[], 'payment_type':[], 'payment_amount':[], 'notes':[], 'date':[], 'full name':[], 'resize-first name':[],
+    'team_photo':[], 'silver_package':[], 'digital_copy':[], 'banner':[], 'flex': [], 'frame':[], 'payment_type':[], 'payment_amount':[], 'notes':[], 'date':[], 'full name':[], 'resize-first name':[],
             'resize-last name':[], 'resize-full name':[], 'rename':[], 'left_number':[], 'right_number':[]}
     #get path to save file to
     messagebox.showinfo(title='Save...', message="Please navigate to where you want to save today's report")
@@ -122,7 +122,7 @@ def generate():
                 draw = ImageDraw.Draw(background)
                 #adds the different text lines to the card
                 qr = Image.open('qrcode.png')
-                qr = qr.resize((1000, 1000), Image.ANTIALIAS)
+                qr = qr.resize((1000, 1000), Image.LANCZOS)
                 background.paste(qr, ((round(paperwidth / 2)), 20))
                 draw.text((center, (height + (interval * 1))), control_number_text, (0, 0, 0), font=ImageFont.truetype(font=font_path, size=300))
                 draw.text((center, (height + (interval * 2))), ('FName - ' + fname.get()), (0, 0, 0), font=font)
@@ -161,10 +161,10 @@ def generate():
                 team['parent_email'].append(email.get())
                 team['eight_by_ten'].append(eightbyten.get())
                 team['team_photo'].append(teamphoto.get())
-                team['fifty_package'].append(fifty.get())
+                team['silver_package'].append(silver.get())
                 team['digital_copy'].append(digital.get())
                 team['banner'].append(banner.get())
-                team['blanket'].append(blanket.get())
+                team['flex'].append(flex.get())
                 team['frame'].append(frame.get())
                 team['payment_type'].append(payment.get())
                 team['payment_amount'].append(paymentamount.get())
@@ -211,7 +211,7 @@ def generate():
                     pass
                 #clear out fields
                 fields_to_clear = [fnameEntry, lnameEntry, numEntry, parentfnameEntry, parentlnameEntry, parentnumberEntry, emailEntry,
-                                   eightbytenEntry, teamphotoEntry, fiftyEntry, digitalEntry, bannerEntry, blanketEntry, frameEntry, paymentamountEntry, notesEntry]
+                                   eightbytenEntry, teamphotoEntry, silverEntry, digitalEntry, bannerEntry, flexEntry, frameEntry, paymentamountEntry, notesEntry]
                 for field in fields_to_clear:
                     field.delete(0, END)
                 payment.set('Did not pay')
@@ -351,7 +351,7 @@ def export_team_by_grade():
 '''def end_session:
     formatted_df = pd.DataFrame(team)
     formatted_df = [['control_number', 'first_name', 'last name', 'number', 'grade', 'sport', 'school', 'team', 'eight_by_ten', 'team_photo',
-                     'fifty_package', 'banner', 'banner', 'blanket', 'frame', 'payment_type', 'payment_amount', 'notes']]
+                     'silver_package', 'banner', 'banner', 'flex', 'frame', 'payment_type', 'payment_amount', 'notes']]
  '''
 
 
@@ -362,14 +362,14 @@ def clear_widget(event):
         eightbytenEntry.delete(0, END)
     elif teamphotoEntry == teamphotoEntry.focus_get():# and lnameEntry.get() == '     ':
         teamphotoEntry.delete(0, END)
-    elif fiftyEntry == fiftyEntry.focus_get():
-        fiftyEntry.delete(0, END)
+    elif silverEntry == silverEntry.focus_get():
+        silverEntry.delete(0, END)
     elif digitalEntry == digitalEntry.focus_get():
         digitalEntry.delete(0, END)
     elif bannerEntry == bannerEntry.focus_get():
         bannerEntry.delete(0, END)
-    elif blanketEntry == blanketEntry.focus_get():
-        blanketEntry.delete(0, END)
+    elif flexEntry == flexEntry.focus_get():
+        flexEntry.delete(0, END)
     elif frameEntry == frameEntry.focus_get():
         frameEntry.delete(0, END)
 def repopulate_defaults(event):
@@ -379,14 +379,14 @@ def repopulate_defaults(event):
         eightbytenEntry.insert(0, defaultsales)
     elif teamphotoEntry != window.focus_get() and teamphotoEntry.get() == '':
         teamphotoEntry.insert(0, defaultsales)
-    elif fiftyEntry != window.focus_get() and fiftyEntry.get() == '':
-        fiftyEntry.insert(0, defaultsales)
+    elif silverEntry != window.focus_get() and silverEntry.get() == '':
+        silverEntry.insert(0, defaultsales)
     elif digitalEntry != window.focus_get() and digitalEntry.get() == '':
         digitalEntry.insert(0, defaultsales)
     elif bannerEntry != window.focus_get() and bannerEntry.get() == '':
         bannerEntry.insert(0, defaultsales)
-    elif blanketEntry != window.focus_get() and blanketEntry.get() == '':
-        blanketEntry.insert(0, defaultsales)
+    elif flexEntry != window.focus_get() and flexEntry.get() == '':
+        flexEntry.insert(0, defaultsales)
     elif frameEntry != window.focus_get() and frameEntry.get() == '':
         frameEntry.insert(0, defaultsales)
 def caps(event):
@@ -411,12 +411,13 @@ emailrow = 1 + parentnumberrow
 spacerow = 1 + emailrow
 eightbytenrow = 1+ spacerow
 teamphotorow = 1 + eightbytenrow
-fiftyrow = 1 + teamphotorow
-digitalrow = 1 + fiftyrow
-bannerrow = 1 + digitalrow
-blanketrow = 1 + bannerrow
-framerow = 1 + blanketrow
-paymentrow = 1 + framerow
+silverrow = 1 + teamphotorow
+framerow = 1 + silverrow
+bannerrow = 1 + framerow
+digitalrow = 1 + bannerrow
+
+flexrow = 1 + digitalrow
+paymentrow = 1 + flexrow
 paymentamountrow = 1 + paymentrow
 notesrow = 1 + paymentamountrow
 submitrow = 2 + notesrow
@@ -466,19 +467,19 @@ eightbytenlab.grid(row=eightbytenrow, column= 0, sticky= N+S+E+W)
 teamphotolab = Label(window, text = 'Team Photo', font = ('Helvitica', 12), bg = 'hotpink')
 teamphotolab.grid(row=teamphotorow, column= 0, sticky= N+S+E+W)
 
-fiftylab = Label(window, text = '$55 Package', font = ('Helvitica', 12), bg = 'hotpink')
-fiftylab.grid(row=fiftyrow, column= 0, sticky= N+S+E+W)
+silverlab = Label(window, text = 'Silver Package', font = ('Helvitica', 12), bg = 'hotpink')
+silverlab.grid(row=silverrow, column= 0, sticky= N+S+E+W)
 
-digitallab = Label(window, text = 'Digital Copy', font = ('Helvitica', 12), bg = 'hotpink')
+digitallab = Label(window, text = 'Digital', font = ('Helvitica', 12), bg = 'hotpink')
 digitallab.grid(row=digitalrow, column= 0, sticky= N+S+E+W)
 
-bannerlab = Label(window, text = 'Banner $40', font = ('Helvitica', 12), bg = 'hotpink')
+bannerlab = Label(window, text = 'Banner', font = ('Helvitica', 12), bg = 'hotpink')
 bannerlab.grid(row=bannerrow, column= 0, sticky= N+S+E+W)
 
-blanketlab = Label(window, text = 'Blanket $70', font = ('Helvitica', 12), bg = 'hotpink')
-blanketlab.grid(row=blanketrow, column= 0, sticky= N+S+E+W)
+flexlab = Label(window, text = 'Flex', font = ('Helvitica', 12), bg = 'hotpink')
+flexlab.grid(row=flexrow, column= 0, sticky= N+S+E+W)
 
-framelab = Label(window, text = 'Frame $20', font = ('Helvitica', 12), bg = 'hotpink')
+framelab = Label(window, text = 'Frame', font = ('Helvitica', 12), bg = 'hotpink')
 framelab.grid(row=framerow, column= 0, sticky= N+S+E+W)
 
 paymentlab = Label(window, text="Payment Type",  font=("Helvetica", 20), bg = 'hotpink')
@@ -564,12 +565,12 @@ teamphotoEntry.grid(row=teamphotorow, column=1, sticky= N+S+E+W)
 teamphotoEntry.bind("<FocusIn>", clear_widget)
 teamphotoEntry.bind('<FocusOut>', repopulate_defaults)
 
-fifty = StringVar()
-fiftyEntry = Entry(window, textvariable = fifty, font=("Helvetica", 20))
-fiftyEntry.insert(END, 0)
-fiftyEntry.grid(row=fiftyrow, column=1, sticky= N+S+E+W)
-fiftyEntry.bind("<FocusIn>", clear_widget)
-fiftyEntry.bind('<FocusOut>', repopulate_defaults)
+silver = StringVar()
+silverEntry = Entry(window, textvariable = silver, font=("Helvetica", 20))
+silverEntry.insert(END, 0)
+silverEntry.grid(row=silverrow, column=1, sticky= N+S+E+W)
+silverEntry.bind("<FocusIn>", clear_widget)
+silverEntry.bind('<FocusOut>', repopulate_defaults)
 
 digital = StringVar()
 digitalEntry = Entry(window, textvariable = digital, font=("Helvetica", 20))
@@ -585,12 +586,12 @@ bannerEntry.grid(row=bannerrow, column=1, sticky= N+S+E+W)
 bannerEntry.bind("<FocusIn>", clear_widget)
 bannerEntry.bind('<FocusOut>', repopulate_defaults)
 
-blanket = StringVar()
-blanketEntry = Entry(window, textvariable = blanket, font=("Helvetica", 20))
-blanketEntry.insert(END, 0)
-blanketEntry.grid(row=blanketrow, column=1, sticky= N+S+E+W)
-blanketEntry.bind("<FocusIn>", clear_widget)
-blanketEntry.bind('<FocusOut>', repopulate_defaults)
+flex = StringVar()
+flexEntry = Entry(window, textvariable = flex, font=("Helvetica", 20))
+flexEntry.insert(END, 0)
+flexEntry.grid(row=flexrow, column=1, sticky= N+S+E+W)
+flexEntry.bind("<FocusIn>", clear_widget)
+flexEntry.bind('<FocusOut>', repopulate_defaults)
 
 frame = StringVar()
 frameEntry = Entry(window, textvariable = frame, font=("Helvetica", 20))
@@ -619,16 +620,16 @@ notesEntry.grid(row=notesrow, column=1, sticky= N+S+E+W)
 notesEntry.bind("<FocusIn>", clear_widget)
 
 createButton = Button(window, text= "Submit", font=("Helvetica", 20, 'bold italic'), bg = '#6cefff', width= 15,command= generate)
-createButton.grid(row=submitrow, column=1, sticky= N+S+E+W)
+createButton.grid(row=notesrow, column=2, sticky= N+S+E+W)
 
 totalButton = Button(window, text= "Total Up", font=("Helvetica", 12), width= 15,command= total_up)
-totalButton.grid(row=paymentamountrow, column=2, sticky= N+S+E+W)
+totalButton.grid(row=flexrow, column=2, sticky= N+S+E+W)
 
 printteamgradeButton = Button(window, text= "Export Team - Grade", font=("Helvetica", 12), width= 5,command= export_team_by_grade)
-printteamgradeButton.grid(row=submitrow, column=2, sticky= N+S+E+W)
+printteamgradeButton.grid(row=paymentrow, column=2, sticky= N+S+E+W)
 
 printteamnumberButton = Button(window, text= "Export Team - Number", font=("Helvetica", 12), width= 5,command= export_team_by_number)
-printteamnumberButton.grid(row=notesrow, column=2, sticky= N+S+E+W)
+printteamnumberButton.grid(row=paymentamountrow, column=2, sticky= N+S+E+W)
 
 #notificationLabel= Label(window)
 #notificationLabel.grid(row= submitrow, column=1, sticky= N+S+E+W)
