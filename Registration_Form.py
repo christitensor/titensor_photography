@@ -82,7 +82,7 @@ defaultsalesvar= StringVar(window, value=str(defaultsales))
 if sys.platform == 'darwin':
     font_path = '/System/Library/Fonts/Helvetica'
 else:
-    font_path = '/C:/WINDOWS/FONTS/ARLRDBD'
+    font_path = r'C:\Windows\Fonts\arial.ttf'
 
 def generate():
     #function to convert inputs to dictionary and dataframe, also creates QR code and prints out card
