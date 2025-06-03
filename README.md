@@ -39,7 +39,8 @@ While Kivy works cross‑platform, for a fully native iOS experience consider po
 
 ## SwiftUI Registration App
 
-`RegistrationApp_SwiftUI.swift` contains a SwiftUI implementation of the registration form. Create a new iOS
-project in Xcode and replace the default code with this file to run natively on iPad or iPhone. The view model
-stores entries in `registration.csv` inside the app's documents directory and also generates a QR code for each
-submission using Core Image.
+`RegistrationApp_SwiftUI.swift` now contains a functional SwiftUI version of the
+registration app. The form uses native `TextField`, `Picker` and `TextEditor`
+controls and saves session data to JSON. It also generates QR codes, exports
+the roster to CSV and lets you edit existing entries. Open the file in a new
+Xcode project to run the iPad app.
